@@ -1,0 +1,534 @@
+<!doctype html>
+<html lang="en">
+    
+    <head>
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+        
+        <script src="https://kit.fontawesome.com/caed7b9372.js" crossorigin="anonymous"></script>
+        
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+
+        <title>Finello AI - local</title>
+    </head>
+    
+    <style>
+        body{
+            background-color:#FAFAFA;
+        }
+    </style>
+    
+    <body>
+        <section class="contatiner-fluid">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-info">
+            <h1 class="navbar-brand" style="color:#E6E6E6;">Finello AI</h1>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="https://finello-qlmwq.run.goorm.io/" style="color:white;">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="https://finello-qlmwq.run.goorm.io/local/" style="color:white;">국내증시</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="https://finello-qlmwq.run.goorm.io/international/" style="color:white;">해외증시</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="https://finello-qlmwq.run.goorm.io/resource/" style="color:white;">실물 자산</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="https://finello-qlmwq.run.goorm.io/fund/" style="color:white;">펀드(준비 중)</a>
+                </li>
+                </ul>
+            </div>
+        </nav>
+        </section>
+        
+        <div class="nav bg-secondary col-lg-12 col-sm-12">
+            <li class="nav-item">
+                <a class="nav-link bg-info" href="{% url 'bench'  selected_ticker=selected %}" onclick="window.open(this.href, '_blank', 'width=1250px,height=500px,toolbars=no,scrollbars=no'); return false;" style="color:white;">종목 설명</a>
+            </li>
+            <hr>
+            <form action="{% url 'local' %}" class="form-inline my-2 my-lg-0">
+                <select name="etfkr" onchange="this.form.submit();">
+                    <option value="KODEX 200">KODEX 200</option>
+                    {% for i in ticker_exclude %}  
+                    <option value="{{i}}">{{i}}</option>
+                    {% endfor %}
+                </select>
+            </form>
+        </div>
+        
+        <br>
+        <br>
+        
+        <section class="resume-section">
+            <div class="container-fluid">
+                <div class="row no-gutters">
+                    <div class="col-lg-5 col-sm-5">
+                        <a class="portfolio-box">
+                            <div class="portfolio-box-caption">
+                                <span class="badge badge-info">현재 시세</span>
+                                <br>
+                                <div>
+                                    <canvas id="myChart1"></canvas>
+                                </div>
+                            </div>
+                            <br>
+                            <hr>
+                            <br>
+                            <div class="portfolio-box-caption">
+                                <span class="badge badge-info">예상 등락</span>
+                                <br>
+                                <div>
+                                    <canvas id="myChart7"></canvas>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-lg-2 col-sm-2"><hr style="width: 1px; height: 50px; border: none;"></div>
+                    <div class="col-lg-5 col-sm-5">
+                        <table class="table table-bordered">
+                            <tbody>
+                                <span class="badge badge-info">연관성 상위 5순위</span>
+                                <br>
+                                <br>
+                                <tr class="bg-dark">
+                                    <th style="color:white;">순위</th>
+                                    <th style="color:white;">종목</th>
+                                    <th style="color:white;">지수</th>
+                                </tr>
+                                <tr>
+                                    <td>1</td>
+                                    <td><a href="https://finance.naver.com/item/main.nhn?code={{high_code.0}}">
+                                    <div style="height:100%;width:100%">
+                                      {{high_corr.0.0}}
+                                    </div>
+                                    </a></td>
+                                    <td>{{high_corr.1.0}}</td>
+                                </tr>     
+                                <tr>
+                                    <td>2</td>
+                                    <td><a href="https://finance.naver.com/item/main.nhn?code={{high_code.1}}">
+                                    <div style="height:100%;width:100%">
+                                      {{high_corr.0.1}}
+                                    </div>
+                                    </a></td>
+                                    <td>{{high_corr.1.1}}</td>
+                                </tr>
+                                <tr>
+                                    <td>3</td>
+                                    <td><a href="https://finance.naver.com/item/main.nhn?code={{high_code.2}}">
+                                    <div style="height:100%;width:100%">
+                                      {{high_corr.0.2}}
+                                    </div>
+                                    </a></td>
+                                    <td>{{high_corr.1.2}}</td>
+                                </tr>
+                                <tr>
+                                    <td>4</td>
+                                    <td><a href="https://finance.naver.com/item/main.nhn?code={{high_code.3}}">
+                                    <div style="height:100%;width:100%">
+                                      {{high_corr.0.3}}
+                                    </div>
+                                    </a></td>
+                                    <td>{{high_corr.1.3}}</td>
+                                </tr>
+                                <tr>
+                                    <td>5</td>
+                                    <td><a href="https://finance.naver.com/item/main.nhn?code={{high_code.4}}">
+                                    <div style="height:100%;width:100%">
+                                      {{high_corr.0.4}}
+                                    </div>
+                                    </a></td>
+                                    <td>{{high_corr.1.4}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        
+                        <br>
+                        <br>
+                        <hr>
+                        <br>
+                        <br>
+                        
+                        <table class="table table-bordered">
+                            <tbody>
+                                <span class="badge badge-info">연관성 하위 5순위</span>
+                                <br>
+                                <br>
+                                <tr class="bg-dark">
+                                    <th style="color:white;">순위</th>
+                                    <th style="color:white;">종목</th>
+                                    <th style="color:white;">지수</th>
+                                </tr>
+                                <tr>
+                                    <td>1</td>
+                                    <td><a href="https://finance.naver.com/item/main.nhn?code={{low_code.0}}">
+                                    <div style="height:100%;width:100%">
+                                      {{low_corr.0.0}}
+                                    </div>
+                                    </a></td>
+                                    <td>{{low_corr.1.0}}</td>
+                                </tr>     
+                                <tr>
+                                    <td>2</td>
+                                    <td><a href="https://finance.naver.com/item/main.nhn?code={{low_code.1}}">
+                                    <div style="height:100%;width:100%">
+                                      {{low_corr.0.1}}
+                                    </div>
+                                    </a></td>
+                                    <td>{{low_corr.1.1}}</td>
+                                </tr>
+                                <tr>
+                                    <td>3</td>
+                                    <td><a href="https://finance.naver.com/item/main.nhn?code={{low_code.2}}">
+                                    <div style="height:100%;width:100%">
+                                      {{low_corr.0.2}}
+                                    </div>
+                                    </a></td>
+                                    <td>{{low_corr.1.2}}</td>
+                                </tr>
+                                <tr>
+                                    <td>4</td>
+                                    <td><a href="https://finance.naver.com/item/main.nhn?code={{low_code.3}}">
+                                    <div style="height:100%;width:100%">
+                                      {{low_corr.0.3}}
+                                    </div>
+                                    </a></td>
+                                    <td>{{low_corr.1.3}}</td>
+                                </tr>
+                                <tr>
+                                    <td>5</td>
+                                    <td><a href="https://finance.naver.com/item/main.nhn?code={{low_code.4}}">
+                                    <div style="height:100%;width:100%">
+                                      {{low_corr.0.4}}
+                                    </div>
+                                    </a></td>
+                                    <td>{{low_corr.1.4}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <br>
+        <br>
+        <hr>
+        <br>
+        <br>
+        
+        <section class="resume-section">
+            <div class="container-fluid">
+                <div class="row no-gutters">
+                    <div class="col-lg-3 col-sm-3">
+                        <a class="portfolio-box">
+                            <div class="portfolio-box-caption">
+                                <span class="badge badge-info">과거 유사성 1</span>
+                                <div>
+                                    <canvas id="myChart2"></canvas>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-lg-1 col-sm-1"><hr style="width: 1px; height: 50px; border: none;"></div>
+                    <div class="col-lg-3 col-sm-3">
+                        <a class="portfolio-box">
+                            <div class="portfolio-box-caption">
+                                <span class="badge badge-info">과거 유사성 2</span>
+                                <div>
+                                    <canvas id="myChart3"></canvas>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-lg-1 col-sm-1"><hr style="width: 1px; height: 50px; border: none;"></div>
+                    <div class="col-lg-3 col-sm-3">
+                        <a class="portfolio-box">
+                            <div class="portfolio-box-caption">
+                                <span class="badge badge-info">과거 유사성 3</span>
+                                <div>
+                                    <canvas id="myChart4"></canvas>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <br>
+        <br>
+        <br>
+        <br>
+
+        <section class="resume-section">
+            <div class="container-fluid">
+                <div class="row no-gutters">
+                    <div class="col-lg-3 col-sm-3">
+                        <a class="portfolio-box">
+                            <div class="portfolio-box-caption">
+                                <span class="badge badge-info">과거 유사성 4</span>
+                                <div>
+                                    <canvas id="myChart5"></canvas>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-lg-1 col-sm-1"><hr style="width: 1px; height: 50px; border: none;"></div>
+                    <div class="col-lg-3 col-sm-3">
+                        <a class="portfolio-box">
+                            <div class="portfolio-box-caption">
+                                <span class="badge badge-info">과거 유사성 5</span>
+                                <div>
+                                    <canvas id="myChart6"></canvas>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-lg-1 col-sm-1"><hr style="width: 1px; height: 50px; border: none;"></div>
+                    <div class="col-lg-3 col-sm-3">
+                        <a class="portfolio-box">
+                            <div class="portfolio-box-caption">
+                                
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <br>
+        <br>
+        <hr>
+        
+        <div class="jumbotron jumbotron-fluid" style="background-color:#FAFAFA;">
+            <div class="container-fluid">
+                <p class="lead">Finello AI @ 2020, KNU startup lab 103</p>
+            </div>
+        </div>
+
+        <script>
+        var ctx1 = document.getElementById("myChart1").getContext('2d');
+        var myChart1 = new Chart(ctx1, {
+            type: 'line',
+            data: {
+                labels:{{date|safe}},
+                datasets: [
+                        {
+                        fill : false ,
+                        borderColor: "red",
+                        label: '{{selected}}',
+                        data: {{data}},
+                        },
+                      ]
+            },
+    options: {
+        maintainAspectRatio: true,
+        scales: {
+            yAxes: [{
+                ticks: {
+                  callback: function(value, index) {
+	     return value + "%";
+
+      }
+    }
+  }]
+}
+
+    }
+        });
+            
+        var ctx2 = document.getElementById("myChart2").getContext('2d');
+        var myChart2 = new Chart(ctx2, {
+            type: 'line',
+            data: {
+                labels:{{hisdate.date0|safe}} ,
+                datasets: [{
+                    fill : false ,
+                    label: '유사도 1위, 일주일 뒤 수익률 : {{bardata.0|safe}}%',
+                    data: {{hisdata.data0}},
+                    borderColor: 'magenta',
+                }]
+            },
+    options: {
+        maintainAspectRatio: true,
+        scales: {
+            yAxes: [{
+                ticks: {
+                  callback: function(value, index) {
+	     return value + "%";
+
+      }
+    }
+  }]
+}
+
+    }
+        });
+            
+        var ctx3 = document.getElementById("myChart3").getContext('2d');
+        var myChart3 = new Chart(ctx3, {
+            type: 'line',
+            data: {
+                labels:{{hisdate.date1|safe}} ,
+                datasets: [{
+                    fill : false ,
+                    label: '유사도 2위, 일주일 뒤 수익률 : {{bardata.1|safe}}%',
+                    data: {{hisdata.data1}},
+                    borderColor: 'blue',
+                }]
+            },
+    options: {
+        maintainAspectRatio: true,
+        scales: {
+            yAxes: [{
+                ticks: {
+                  callback: function(value, index) {
+	     return value + "%";
+
+      }
+    }
+  }]
+}
+
+    }
+        });
+        var ctx4 = document.getElementById("myChart4").getContext('2d');
+        var myChart4 = new Chart(ctx4, {
+            type: 'line',
+            data: {
+                labels:{{hisdate.date2|safe}} ,
+                datasets: [{
+                    fill : false ,
+                    label: '유사도 3위, 일주일 뒤 수익률 : {{bardata.2|safe}}%',
+                    data: {{hisdata.data2}},
+                    borderColor: 'cyan',
+                }]
+            },
+    options: {
+        maintainAspectRatio: true,
+        scales: {
+            yAxes: [{
+                ticks: {
+                  callback: function(value, index) {
+	     return value + "%";
+
+      }
+    }
+  }]
+}
+
+    }
+        });
+            
+        var ctx5 = document.getElementById("myChart5").getContext('2d');
+        var myChart5 = new Chart(ctx5, {
+            type: 'line',
+            data: {
+                labels:{{hisdate.date3|safe}} ,
+                datasets: [{
+                    fill : false ,
+                    label: '유사도 4위, 일주일 뒤 수익률 : {{bardata.3|safe}}%',
+                    data: {{hisdata.data3}},
+                    borderColor: 'green',
+                }]
+            },
+    options: {
+        maintainAspectRatio: true,
+        scales: {
+            yAxes: [{
+                ticks: {
+                  callback: function(value, index) {
+	     return value + "%";
+
+      }
+    }
+  }]
+}
+
+    }
+        });
+            
+        var ctx6 = document.getElementById("myChart6").getContext('2d');
+        var myChart6 = new Chart(ctx6, {
+            type: 'line',
+            data: {
+                labels:{{hisdate.date4|safe}} ,
+                datasets: [{
+                    fill : false ,
+                    label: '유사도 5위, 일주일 뒤 수익률 : {{bardata.4|safe}}%',
+                    data: {{hisdata.data4}},
+                    borderColor: 'yellow',
+                }]
+            },
+    options: {
+        maintainAspectRatio: true,
+        scales: {
+            yAxes: [{
+                ticks: {
+                  callback: function(value, index) {
+	     return value + "%";
+
+      }
+    }
+  }]
+}
+
+    }
+        });
+            
+        var ctx7 = document.getElementById("myChart7").getContext('2d');
+        var myChart7 = new Chart(ctx7, {
+            type: 'bar',
+            data: {
+                labels: ['유사도 1위','유사도 2위','유사도 3위','유사도 4위','유사도 5위'] ,
+                datasets: [{
+            
+                    label: '5일 후 예측',
+                    data: {{bardata|safe}} ,
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',],
+                    borderColor: 'blue',
+                }]
+            },
+    options: {
+        maintainAspectRatio: true,
+        scales: {
+            yAxes: [{
+                ticks: {
+                  callback: function(value, index) {
+	     return value + "%";
+
+      }
+    }
+  }]
+}
+
+    }
+        });
+        </script>
+        
+        <!-- Option 1: jQuery and Bootstrap Bundle (includes Popper) -->
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
+
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" integrity="sha384-w1Q4orYjBQndcko6MimVbzY0tgp4pWB4lZ7lr30WKz0vr/aWKhXdBNmNb5D92v7s" crossorigin="anonymous"></script>
+    </body>
+    
+</html>
