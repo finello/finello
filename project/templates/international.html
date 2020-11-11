@@ -25,15 +25,12 @@
     <body>
         <section class="contatiner-fluid">
         <nav class="navbar navbar-expand-lg navbar-dark bg-info">
-            <h1 class="navbar-brand" style="color:#E6E6E6;">Finello AI</h1>
+            <h1 class="navbar-brand" onClick="location.href='https://finello-qlmwq.run.goorm.io/'" style="color:#E6E6E6; cursor:pointer;">Finello AI</h1>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav mr-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="https://finello-qlmwq.run.goorm.io/" style="color:white;">Home</a>
-                </li>
                 <li class="nav-item">
                     <a class="nav-link" href="https://finello-qlmwq.run.goorm.io/local/" style="color:white;">국내증시</a>
                 </li>
@@ -42,9 +39,6 @@
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="https://finello-qlmwq.run.goorm.io/resource/" style="color:white;">실물 자산</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="https://finello-qlmwq.run.goorm.io/fund/" style="color:white;">펀드(준비 중)</a>
                 </li>
                 </ul>
             </div>
@@ -57,12 +51,21 @@
             </li>
             <hr>
             <form action="{% url 'international' %}" class="form-inline my-2 my-lg-0">
+            {% if selected == None %}
                 <select name="etfkr" onchange="this.form.submit();">
-                    <option value='TIGER 미국나스닥100'>TIGER 미국나스닥100</option>
+                    <option value="KODEX 200">KODEX 200</option>
                     {% for i in ticker_exclude %}  
                     <option value="{{i}}">{{i}}</option>
                     {% endfor %}
                 </select>
+            {% else %}
+                    <select name="etfkr" onchange="this.form.submit();">
+                    <option value="{{selected}}">{{selected}}</option>
+                    {% for i in ticker_exclude %}  
+                    <option value="{{i}}">{{i}}</option>
+                    {% endfor %}
+                </select>
+            {% endif %}
             </form>
         </div>
         
@@ -75,7 +78,9 @@
                     <div class="col-lg-5 col-sm-5">
                         <a class="portfolio-box">
                             <div class="portfolio-box-caption">
-                                <span class="badge badge-info">현재 시세</span>
+                                <span class="btn btn-info btn-block disabled">현재 시세</span>
+                                <br>
+                                <br>
                                 <br>
                                 <div>
                                     <canvas id="myChart1"></canvas>
@@ -85,7 +90,9 @@
                             <hr>
                             <br>
                             <div class="portfolio-box-caption">
-                                <span class="badge badge-info">예상 등락</span>
+                                <span class="btn btn-info btn-block disabled">예상 등락</span>
+                                <br>
+                                <br>
                                 <br>
                                 <div>
                                     <canvas id="myChart7"></canvas>
@@ -97,57 +104,63 @@
                     <div class="col-lg-5 col-sm-5">
                         <table class="table table-bordered">
                             <tbody>
-                                <span class="badge badge-info">연관성 상위 5순위</span>
+                                <span class="btn btn-info btn-block disabled">유사도 상위 5순위</span>
+                                <br>
                                 <br>
                                 <br>
                                 <tr class="bg-dark">
-                                    <th style="color:white;">순위</th>
-                                    <th style="color:white;">종목</th>
-                                    <th style="color:white;">지수</th>
+                                    <th style="color:white; width:15%;">순위</th>
+                                    <th style="color:white; width:65%;">종목</th>
+                                    <th style="color:white; width:20%;">지수</th>
                                 </tr>
                                 <tr>
                                     <td>1</td>
-                                    <td><a href="https://finance.naver.com/item/main.nhn?code={{high_code.0}}">
+                                    <td>
                                     <div style="height:100%;width:100%">
                                       {{high_corr.0.0}}
+                                        <button class="btn btn-info float-right" onclick="location.href='https://finance.naver.com/item/main.nhn?code={{high_code.0}}'"><i class="fas fa-search-plus"></i></button>
                                     </div>
-                                    </a></td>
+                                    </td>
                                     <td>{{high_corr.1.0}}</td>
                                 </tr>     
                                 <tr>
                                     <td>2</td>
-                                    <td><a href="https://finance.naver.com/item/main.nhn?code={{high_code.1}}">
+                                    <td>
                                     <div style="height:100%;width:100%">
                                       {{high_corr.0.1}}
+                                        <button class="btn btn-info float-right" onclick="location.href='https://finance.naver.com/item/main.nhn?code={{high_code.1}}'"><i class="fas fa-search-plus"></i></button>
                                     </div>
-                                    </a></td>
+                                    </td>
                                     <td>{{high_corr.1.1}}</td>
                                 </tr>
                                 <tr>
                                     <td>3</td>
-                                    <td><a href="https://finance.naver.com/item/main.nhn?code={{high_code.2}}">
+                                    <td>
                                     <div style="height:100%;width:100%">
                                       {{high_corr.0.2}}
+                                        <button class="btn btn-info float-right" onclick="location.href='https://finance.naver.com/item/main.nhn?code={{high_code.2}}'"><i class="fas fa-search-plus"></i></button>
                                     </div>
-                                    </a></td>
+                                    </td>
                                     <td>{{high_corr.1.2}}</td>
                                 </tr>
                                 <tr>
                                     <td>4</td>
-                                    <td><a href="https://finance.naver.com/item/main.nhn?code={{high_code.3}}">
+                                    <td>
                                     <div style="height:100%;width:100%">
                                       {{high_corr.0.3}}
+                                        <button class="btn btn-info float-right" onclick="location.href='https://finance.naver.com/item/main.nhn?code={{high_code.3}}'"><i class="fas fa-search-plus"></i></button>
                                     </div>
-                                    </a></td>
+                                    </td>
                                     <td>{{high_corr.1.3}}</td>
                                 </tr>
                                 <tr>
                                     <td>5</td>
-                                    <td><a href="https://finance.naver.com/item/main.nhn?code={{high_code.4}}">
+                                    <td>
                                     <div style="height:100%;width:100%">
                                       {{high_corr.0.4}}
+                                        <button class="btn btn-info float-right" onclick="location.href='https://finance.naver.com/item/main.nhn?code={{high_code.4}}'"><i class="fas fa-search-plus"></i></button>
                                     </div>
-                                    </a></td>
+                                    </td>
                                     <td>{{high_corr.1.4}}</td>
                                 </tr>
                             </tbody>
@@ -161,57 +174,63 @@
                         
                         <table class="table table-bordered">
                             <tbody>
-                                <span class="badge badge-info">연관성 하위 5순위</span>
+                                <span class="btn btn-info btn-block disabled">유사도 하위 5순위</span>
+                                <br>
                                 <br>
                                 <br>
                                 <tr class="bg-dark">
-                                    <th style="color:white;">순위</th>
-                                    <th style="color:white;">종목</th>
-                                    <th style="color:white;">지수</th>
+                                    <th style="color:white; width:15%;">순위</th>
+                                    <th style="color:white; width:65%;">종목</th>
+                                    <th style="color:white; width:20%;">지수</th>
                                 </tr>
                                 <tr>
                                     <td>1</td>
-                                    <td><a href="https://finance.naver.com/item/main.nhn?code={{low_code.0}}">
+                                    <td>
                                     <div style="height:100%;width:100%">
                                       {{low_corr.0.0}}
+                                        <button class="btn btn-info float-right" onclick="location.href='https://finance.naver.com/item/main.nhn?code={{low_code.0}}'"><i class="fas fa-search-plus"></i></button>
                                     </div>
-                                    </a></td>
+                                    </td>
                                     <td>{{low_corr.1.0}}</td>
                                 </tr>     
                                 <tr>
                                     <td>2</td>
-                                    <td><a href="https://finance.naver.com/item/main.nhn?code={{low_code.1}}">
+                                    <td>
                                     <div style="height:100%;width:100%">
                                       {{low_corr.0.1}}
+                                        <button class="btn btn-info float-right" onclick="location.href='https://finance.naver.com/item/main.nhn?code={{low_code.1}}'"><i class="fas fa-search-plus"></i></button>
                                     </div>
-                                    </a></td>
+                                    </td>
                                     <td>{{low_corr.1.1}}</td>
                                 </tr>
                                 <tr>
                                     <td>3</td>
-                                    <td><a href="https://finance.naver.com/item/main.nhn?code={{low_code.2}}">
+                                    <td>
                                     <div style="height:100%;width:100%">
                                       {{low_corr.0.2}}
+                                        <button class="btn btn-info float-right" onclick="location.href='https://finance.naver.com/item/main.nhn?code={{low_code.2}}'"><i class="fas fa-search-plus"></i></button>
                                     </div>
-                                    </a></td>
+                                    </td>
                                     <td>{{low_corr.1.2}}</td>
                                 </tr>
                                 <tr>
                                     <td>4</td>
-                                    <td><a href="https://finance.naver.com/item/main.nhn?code={{low_code.3}}">
+                                    <td>
                                     <div style="height:100%;width:100%">
                                       {{low_corr.0.3}}
+                                        <button class="btn btn-info float-right" onclick="location.href='https://finance.naver.com/item/main.nhn?code={{low_code.3}}'"><i class="fas fa-search-plus"></i></button>
                                     </div>
-                                    </a></td>
+                                    </td>
                                     <td>{{low_corr.1.3}}</td>
                                 </tr>
                                 <tr>
                                     <td>5</td>
-                                    <td><a href="https://finance.naver.com/item/main.nhn?code={{low_code.4}}">
+                                    <td>
                                     <div style="height:100%;width:100%">
                                       {{low_corr.0.4}}
+                                        <button class="btn btn-info float-right" onclick="location.href='https://finance.naver.com/item/main.nhn?code={{low_code.4}}'"><i class="fas fa-search-plus"></i></button>
                                     </div>
-                                    </a></td>
+                                    </td>
                                     <td>{{low_corr.1.4}}</td>
                                 </tr>
                             </tbody>
@@ -233,7 +252,10 @@
                     <div class="col-lg-3 col-sm-3">
                         <a class="portfolio-box">
                             <div class="portfolio-box-caption">
-                                <span class="badge badge-info">과거 유사성 1</span>
+                                <span class="btn btn-info btn-block disabled">과거 유사성 1</span>
+                                <br>
+                                <br>
+                                <br>
                                 <div>
                                     <canvas id="myChart2"></canvas>
                                 </div>
@@ -244,7 +266,10 @@
                     <div class="col-lg-3 col-sm-3">
                         <a class="portfolio-box">
                             <div class="portfolio-box-caption">
-                                <span class="badge badge-info">과거 유사성 2</span>
+                                <span class="btn btn-info btn-block disabled">과거 유사성 2</span>
+                                <br>
+                                <br>
+                                <br>
                                 <div>
                                     <canvas id="myChart3"></canvas>
                                 </div>
@@ -255,7 +280,10 @@
                     <div class="col-lg-3 col-sm-3">
                         <a class="portfolio-box">
                             <div class="portfolio-box-caption">
-                                <span class="badge badge-info">과거 유사성 3</span>
+                                <span class="btn btn-info btn-block disabled">과거 유사성 3</span>
+                                <br>
+                                <br>
+                                <br>
                                 <div>
                                     <canvas id="myChart4"></canvas>
                                 </div>
@@ -277,7 +305,10 @@
                     <div class="col-lg-3 col-sm-3">
                         <a class="portfolio-box">
                             <div class="portfolio-box-caption">
-                                <span class="badge badge-info">과거 유사성 4</span>
+                                <span class="btn btn-info btn-block disabled">과거 유사성 4</span>
+                                <br>
+                                <br>
+                                <br>
                                 <div>
                                     <canvas id="myChart5"></canvas>
                                 </div>
@@ -288,7 +319,10 @@
                     <div class="col-lg-3 col-sm-3">
                         <a class="portfolio-box">
                             <div class="portfolio-box-caption">
-                                <span class="badge badge-info">과거 유사성 5</span>
+                                <span class="btn btn-info btn-block disabled">과거 유사성 5</span>
+                                <br>
+                                <br>
+                                <br>
                                 <div>
                                     <canvas id="myChart6"></canvas>
                                 </div>

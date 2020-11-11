@@ -25,10 +25,12 @@ def local (request):
 
     # ticker_list = Kr.objects.values_list('name', flat=True).distinct() #flat =True - tuple -> list
     ticker_list = ClusteringkrInfo.objects.all().filter(구분='국내').values_list('name', flat = True)
-    ticker_exclude = ticker_list.exclude(name='KODEX 200')
     selected = request.GET.get('etfkr')
     if selected == None:
         selected = 'KODEX 200'
+        ticker_exclude = ticker_list.exclude(name=selected)
+    else :
+        ticker_exclude = ticker_list.exclude(name=selected)
     # print(selected)
     data = []
     date = []
@@ -74,7 +76,8 @@ def local (request):
         input_etf = 'KODEX 200'
     
     #tickerlist 22개로 확장해야함
-    qs = Kr.objects.filter(name__in=ticker_list).all()
+    total_ticker_list = ClusteringkrInfo.objects.all().values_list('name', flat = True)
+    qs = Kr.objects.filter(name__in=total_ticker_list).all()
     
     etf_df = read_frame(qs)
     etf_df['date'] = etf_df['date'].dt.date
@@ -93,6 +96,7 @@ def local (request):
     high_corr_list = high_corr.index.tolist()
     high_corr_values = high_corr.values.flatten().tolist()
     
+
     low_corr = corr.sort_values(input_etf)[:5]
     low_corr = round(low_corr,2)
     low_corr_list = low_corr.index.tolist()
@@ -121,10 +125,12 @@ def international(request):
 
     # ticker_list = Kr.objects.values_list('name', flat=True).distinct() #flat =True - tuple -> list
     ticker_list = ClusteringkrInfo.objects.all().filter(구분='해외').values_list('name', flat = True)
-    ticker_exclude = ticker_list.exclude(name='TIGER 미국나스닥100' )
     selected = request.GET.get('etfkr')
     if selected == None:
         selected = 'TIGER 미국나스닥100'
+        ticker_exclude = ticker_list.exclude(name=selected)
+    else :
+        ticker_exclude = ticker_list.exclude(name=selected)
     # print(selected)
     data = []
     date = []
@@ -169,8 +175,8 @@ def international(request):
     if input_etf == None:
         input_etf = 'TIGER 미국나스닥100'
 
-    qs = Kr.objects.filter(name__in=ticker_list).all()
-    
+    total_ticker_list = ClusteringkrInfo.objects.all().values_list('name', flat = True)
+    qs = Kr.objects.filter(name__in=total_ticker_list).all()
     etf_df = read_frame(qs)
     etf_df['date'] = etf_df['date'].dt.date
     etf_df = etf_df.rename(columns={'name':'etf'})
@@ -214,10 +220,12 @@ def international(request):
 def resource(request):
     # ticker_list = Kr.objects.values_list('name', flat=True).distinct() #flat =True - tuple -> list
     ticker_list = ClusteringkrInfo.objects.all().filter(구분='상품').values_list('name', flat = True)
-    ticker_exclude = ticker_list.exclude(name='KODEX 골드선물(H)')
     selected = request.GET.get('etfkr')
     if selected == None:
-        selected = 'KODEX 골드선물(H)' 
+        selected = 'KODEX 골드선물(H)'
+        ticker_exclude = ticker_list.exclude(name=selected)
+    else :
+        ticker_exclude = ticker_list.exclude(name=selected)
     # print(selected)
     data = []
     date = []
@@ -262,8 +270,8 @@ def resource(request):
     if input_etf == None:
         input_etf = 'KODEX 골드선물(H)' 
 
-    qs = Kr.objects.filter(name__in=ticker_list).all()
-    
+    total_ticker_list = ClusteringkrInfo.objects.all().values_list('name', flat = True)
+    qs = Kr.objects.filter(name__in=total_ticker_list).all()
     etf_df = read_frame(qs)
     etf_df['date'] = etf_df['date'].dt.date
     etf_df = etf_df.rename(columns={'name':'etf'})
